@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 
-public class FasterScanner implements Closeable{
+public class FasterScanner implements Closeable {
     private final InputStream in = System.in;
     private final byte[] buffer = new byte[1024];
     private int ptr = 0;
     private int buflen = 0;
+
     private boolean hasNextByte() {
         if (ptr < buflen) {
             return true;
-        }else{
+        } else {
             ptr = 0;
             try {
                 buflen = in.read(buffer);
@@ -26,21 +27,39 @@ public class FasterScanner implements Closeable{
         }
         return true;
     }
-    private int readByte() { if (hasNextByte()) return buffer[ptr++]; else return -1;}
-    private boolean isPrintableChar(int c) { return 33 <= c && c <= 126;}
-    public boolean hasNext() { while(hasNextByte() && !isPrintableChar(buffer[ptr])) ptr++; return hasNextByte();}
+
+    private int readByte() {
+        if (hasNextByte())
+            return buffer[ptr++];
+        else
+            return -1;
+    }
+
+    private boolean isPrintableChar(int c) {
+        return 33 <= c && c <= 126;
+    }
+
+    public boolean hasNext() {
+        while (hasNextByte() && !isPrintableChar(buffer[ptr]))
+            ptr++;
+        return hasNextByte();
+    }
+
     public String next() {
-        if (!hasNext()) throw new NoSuchElementException();
+        if (!hasNext())
+            throw new NoSuchElementException();
         StringBuilder sb = new StringBuilder();
         int b = readByte();
-        while(isPrintableChar(b)) {
+        while (isPrintableChar(b)) {
             sb.appendCodePoint(b);
             b = readByte();
         }
         return sb.toString();
     }
+
     public long nextLong() {
-        if (!hasNext()) throw new NoSuchElementException();
+        if (!hasNext())
+            throw new NoSuchElementException();
         long n = 0;
         boolean minus = false;
         int b = readByte();
@@ -51,25 +70,31 @@ public class FasterScanner implements Closeable{
         if (b < '0' || '9' < b) {
             throw new NumberFormatException();
         }
-        while(true){
+        while (true) {
             if ('0' <= b && b <= '9') {
                 n *= 10;
                 n += b - '0';
-            }else if(b == -1 || !isPrintableChar(b)){
+            } else if (b == -1 || !isPrintableChar(b)) {
                 return minus ? -n : n;
-            }else{
+            } else {
                 throw new NumberFormatException();
             }
             b = readByte();
         }
     }
+
     public int nextInt() {
         long nl = nextLong();
-        if (nl < Integer.MIN_VALUE || nl > Integer.MAX_VALUE) throw new NumberFormatException();
+        if (nl < Integer.MIN_VALUE || nl > Integer.MAX_VALUE)
+            throw new NumberFormatException();
         return (int) nl;
     }
-    public double nextDouble() { return Double.parseDouble(next());}
-    public void close() throws IOException {
+
+    public double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    public void close() {
         try {
             in.close();
         } catch (IOException e) {
